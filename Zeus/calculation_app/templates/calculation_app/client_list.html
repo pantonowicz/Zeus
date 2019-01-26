@@ -10,8 +10,6 @@
             </div>
             <h2><a class="article-title" href="{% url 'client-detail' client.id %}">{{ client.name }}</a></h2>
             <p class="article-content">{{ client.get_segment_display }}</p>
-
-{#              TODO nie wyświetla nazwy segementu tylko numerek z choicefield#}
           </div>
         </article>
     {% endfor %}

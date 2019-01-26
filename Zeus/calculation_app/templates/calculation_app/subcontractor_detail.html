@@ -1,0 +1,25 @@
+{% extends "calculation_app/base.html" %}
+
+{% block content %}
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="#">{{ subcontractors.name }}</a>
+                <div>
+{#                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'client-update' clients.id %}">Update</a>#}
+{#                    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'client-delete' clients.id %}">Delete</a>#}
+                </div>
+            </div>
+            <h2 class="article-title">{{ subcontractors.name }}</h2>
+            <p>Adres siedziby: {{ subcontractors.street }}</p>
+            <p>Kod pocztowy i miasto: {{ subcontractors.postal }} {{ subcontractors.city }}</p>
+            <p>NIP: {{ subcontractors.nip }}</p>
+            <ul>
+                {% for code in subcontractors.waste_code.all %}
+                   <li>{{ code }}</li>
+                {% endfor %}
+              </ul>
+        </div>
+    </article>
+
+{% endblock %}

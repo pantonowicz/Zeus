@@ -10,7 +10,7 @@
                     <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'client-delete' clients.id %}">Delete</a>
                 </div>
             </div>
-            <h2 class="article-title">{{ object.name }}</h2>
+            <h2 class="article-title">{{ clients.name }}</h2>
             <p class="article-content">{{ clients.get_segment_display }}</p>
             <p>Adres siedziby: {{ clients.street }}</p>
             <p>Kod pocztowy i miasto: {{ clients.postal }} {{ clients.city }}</p>

@@ -20,7 +20,7 @@ SEGMENTS_CHOICES = (
 
 class WasteCodes(models.Model):
     code = models.CharField(max_length=32)
-    description = models.CharField(max_length=64)
+    description = models.TextField()
 
     def __str__(self):
         return f'{self.code} - {self.description}'
