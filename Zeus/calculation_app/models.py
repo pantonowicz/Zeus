@@ -45,6 +45,7 @@ class Clients(models.Model):
     street = models.CharField(max_length=128)
     bdo_number = models.OneToOneField(Bdo, on_delete=models.CASCADE)
 
+
     def __str__(self):
         return f'Client: {self.name}, Segment: {self.segment}, From: {self.street}, {self.postal} {self.city}'
 
