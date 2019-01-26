@@ -1,0 +1,21 @@
+{% extends "calculation_app/base.html" %}
+
+{% block content %}
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="#">{{ clients.name }}</a>
+                <div>
+                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'client-update' clients.id %}">Update</a>
+                    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'client-delete' clients.id %}">Delete</a>
+                </div>
+            </div>
+            <h2 class="article-title">{{ object.name }}</h2>
+            <p class="article-content">{{ clients.get_segment_display }}</p>
+            <p>Adres siedziby: {{ clients.street }}</p>
+            <p>Kod pocztowy i miasto: {{ clients.postal }} {{ clients.city }}</p>
+            <p>NIP: {{ clients.nip }}</p>
+        </div>
+    </article>
+
+{% endblock %}

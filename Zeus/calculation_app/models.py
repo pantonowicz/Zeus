@@ -26,14 +26,14 @@ class WasteCodes(models.Model):
         return f'{self.code} - {self.description}'
 
 
-class Bdo(models.Model):
-    """lista klientów z numerem bdo"""
-    bdo_number = models.DecimalField(max_digits=9, decimal_places=0)
-    company = models.CharField(max_length=128)
-    nip = models.DecimalField(max_digits=10, decimal_places=0)
-
-    def __str__(self):
-        return f'Client: {self.company} - {self.bdo_number}'
+# class Bdo(models.Model):
+#     """lista klientów z numerem bdo"""
+#     bdo_number = models.DecimalField(max_digits=9, decimal_places=0)
+#     company = models.CharField(max_length=128)
+#     nip = models.DecimalField(max_digits=10, decimal_places=0)
+#
+#     def __str__(self):
+#         return f'Client: {self.company} - {self.bdo_number}'
 
 
 class Clients(models.Model):
@@ -43,8 +43,7 @@ class Clients(models.Model):
     city = models.CharField(max_length=64)
     postal = models.CharField(max_length=32)
     street = models.CharField(max_length=128)
-    bdo_number = models.OneToOneField(Bdo, on_delete=models.CASCADE)
-
+    nip = models.DecimalField(max_digits=10, decimal_places=0)
 
     def __str__(self):
         return f'Client: {self.name}, Segment: {self.segment}, From: {self.street}, {self.postal} {self.city}'
@@ -56,7 +55,7 @@ class Subcontractors(models.Model):
     city = models.CharField(max_length=64)
     postal = models.CharField(max_length=32)
     street = models.CharField(max_length=128)
-    bdo_number = models.OneToOneField(Bdo, on_delete=models.CASCADE)
+    nip = models.DecimalField(max_digits=10, decimal_places=0)
     waste_code = models.ManyToManyField(WasteCodes)
 
     def __str__(self):
