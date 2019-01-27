@@ -63,23 +63,32 @@ class Subcontractors(models.Model):
 
 
 class Calculation(models.Model):
+    """Dane dotyczące kontraktu"""
     contract_duration = models.DateField()
     payment_deadline = models.SmallIntegerField()
     offer_deadline = models.DateField()
     date_created = models.DateTimeField(auto_now_add=True)
-    subcontractor = models.ManyToManyField(Subcontractors, through='calculation_app.Order')
+    # subcontractor = models.ManyToManyField(Subcontractors, through='calculation_app.Order')
     client = models.ForeignKey(Clients, on_delete=models.CASCADE)
+    # waste_codes = models.ManyToManyField(WasteCodes)
+    # waste_mass = models.DecimalField(max_digits=9, decimal_places=2)
+
+
+class MassWaste(models.Model):
+    waste_mass = models.DecimalField(max_digits=9, decimal_places=2)
+    waste_codes = models.ForeignKey(WasteCodes, on_delete=models.CASCADE)
+    calculation = models.ForeignKey(Calculation, on_delete=models.CASCADE)
 
 
 class Order(models.Model):
+    """Dane dotyczące wyliczeń"""
     subcontractor = models.ForeignKey(Subcontractors, on_delete=models.CASCADE)
-    calculation = models.ForeignKey(Calculation, on_delete=models.CASCADE)
+    calculation = models.OneToOneField(MassWaste, on_delete=models.CASCADE)
     local_transport_cost = models.DecimalField(max_digits=9, decimal_places=2)
     instalation_transport_cost = models.DecimalField(max_digits=9, decimal_places=2)
     management_cost = models.DecimalField(max_digits=9, decimal_places=2)
     logistic_details = models.CharField(max_length=256)
     quality_details = models.CharField(max_length=256)
-    waste_mass = models.DecimalField(max_digits=9, decimal_places=2)
     costs_mg = models.DecimalField(max_digits=9, decimal_places=2)
     margin_mg = models.DecimalField(max_digits=9, decimal_places=2)
     turnover = models.DecimalField(max_digits=12, decimal_places=2)

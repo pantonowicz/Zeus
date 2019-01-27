@@ -1,0 +1,30 @@
+{% extends "calculation_app/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="#">{{ calculation.client.name }}</a>
+
+            </div>
+            <h2 class="article-title">{{ calculation.contract_duration }}</h2>
+
+
+
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Add Codes</legend>
+                    {{ form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Add Code</button>
+                </div>
+            </form>
+        </div>
+
+    </article>
+
+{% endblock %}

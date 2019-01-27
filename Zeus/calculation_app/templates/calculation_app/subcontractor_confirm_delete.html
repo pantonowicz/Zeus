@@ -7,12 +7,12 @@
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Delete Client</legend>
+                <legend class="border-bottom mb-4">Delete Subcontractor</legend>
                 <h2>Are you sure you want to delete the post "{{ clients.name }}"</h2>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
-                <a class="btn btn-outline-secondary" href="{% url 'client-detail' clients.id %}">Cancel</a>
+                <a class="btn btn-outline-secondary" href="{% url 'subcontractor-detail' subcontractor.id %}">Cancel</a>
             </div>
         </form>
     </div>
