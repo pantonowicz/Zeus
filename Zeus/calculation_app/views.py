@@ -87,13 +87,17 @@ class CalculationDetailView(View):
         return render(request, 'calculation_app/calculation_detail.html', locals())
 
     def post(self, request, pk):
-        form = WasteCodeAddForm(request.POST)
+        calculation = Calculation.objects.get(pk=pk)
+        d = {}
+        d['calculation_id'] = pk
+        form = WasteCodeAddForm(request.POST, initial=d, instance=calculation)
         if form.is_valid():
-            w_code = form.cleaned_data.get('waste_code')
+            w_code = form.cleaned_data.get('waste_codes')
             w_mass = form.cleaned_data.get('waste_mass')
             new_code = MassWaste()
-            new_code.waste_codes = w_code
-            new_code.waste_mass = w_mass
+            new_code.calculation_id = pk
+            new_code.waste_codes_id = w_code
+            new_code.waste_mass_id = w_mass
             new_code.save()
             return redirect('calculation-detail', locals())
 
