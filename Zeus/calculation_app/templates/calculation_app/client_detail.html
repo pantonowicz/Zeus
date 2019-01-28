@@ -6,7 +6,7 @@
             <div class="article-metadata">
                 <a class="mr-2" href="#">{{ clients.name }}</a>
                 <div>
-                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'calculation-add' clients.id %}">Add Calculation</a>
+                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'calculation-add' %}">Add Calculation</a>
                     <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'client-update' clients.id %}">Update</a>
                     <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'client-delete' clients.id %}">Delete</a>
                 </div>
@@ -19,7 +19,9 @@
             <p>Kalkulacje:</p>
             <ul>
                 {% for calc in clients.calculation_set.all %}
-                    <li><a href="{% url 'calculation-detail' calc.id %}"> {{ calc.offer_deadline }}</a></li>
+                    <li><a href="{% url 'calculation-detail' calc.id %}"> {{ calc.offer_deadline }}</a>
+                        <a href="{% url 'calculation-update' calc.id %}">[Update Calculation]</a>
+                        <a href="{% url 'calculation-delete' calc.id %}">[Delete Calculation]</a></li>
                 {% endfor %}
             </ul>
 

@@ -2,7 +2,8 @@ from django.urls import path
 
 from calculation_app.views import ClientListView, ClientAddView, ClientDetailView, ClientUpdateView, ClientDeleteView, \
     SubcontractorListView, SubcontractorDetailView, SubcontractorAddView, SubcontractorUpdateView, \
-    SubcontractorDeleteView, CalculationAddView, CalculationDetailView
+    SubcontractorDeleteView, CalculationAddView, CalculationDetailView, CalculationListView, CalculationUpdateView, \
+    CalculationDeleteView
 from . import views
 
 urlpatterns = [
@@ -20,10 +21,12 @@ urlpatterns = [
     path('subcontractor-update/<int:pk>/', SubcontractorUpdateView.as_view(), name='subcontractor-update'),
     path('subcontractor-delete/<int:pk>/', SubcontractorDeleteView.as_view(), name='subcontractor-delete'),
 
-    path('calculation-add/<int:pk>/', CalculationAddView.as_view(), name='calculation-add'),
+    path('calculation-list/', CalculationListView.as_view(), name='calculation-list'),
     path('calculation-detail/<int:pk>/', CalculationDetailView.as_view(), name='calculation-detail'),
+    path('calculation-add/', CalculationAddView.as_view(), name='calculation-add'),
+    path('calculation-update/<int:pk>', CalculationUpdateView.as_view(), name='calculation-update'),
+    path('calculation-delete/<int:pk>/', CalculationDeleteView.as_view(), name='calculation-delete'),
 
-    # path('calculation-update/<int:pk>', CalculationUpdateView.as_view(), name='calculation-update'),
     # path('waste-add/<int:pk>/', CalculationWasteCodeAddView.as_view(), name='code-add'),
 
     path('about/', views.about, name='calc-about'),

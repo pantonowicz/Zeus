@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'Zeus.wsgi.application'
 DATABASES = {
     'default': {
         'HOST': '127.0.0.1',
-        'NAME': 'zeus_db',
+        'NAME': 'zeus2_db',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'USER': 'postgres',
         'PASSWORD': 'coderslab',

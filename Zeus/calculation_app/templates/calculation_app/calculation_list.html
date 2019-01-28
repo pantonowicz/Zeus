@@ -1,0 +1,16 @@
+{% extends "calculation_app/base.html" %}
+
+{% block content %}
+    {% for calculation in calculation_list %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ calculation.client }}</a>
+{#              <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>#}
+            </div>
+            <h2><a class="article-title" href="{% url 'calculation-detail' calculation.client.id %}">{{ calculation.client.name}}</a></h2>
+            <p class="article-content">{{ calculation.offer_deadline}}</p>
+          </div>
+        </article>
+    {% endfor %}
+{% endblock %}

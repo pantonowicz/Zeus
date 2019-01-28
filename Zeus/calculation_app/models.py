@@ -89,6 +89,7 @@ class Order(models.Model):
     management_cost = models.DecimalField(max_digits=9, decimal_places=2)
     logistic_details = models.CharField(max_length=256)
     quality_details = models.CharField(max_length=256)
+    unit = models.CharField(max_length=32)
     costs_mg = models.DecimalField(max_digits=9, decimal_places=2)
     margin_mg = models.DecimalField(max_digits=9, decimal_places=2)
     turnover = models.DecimalField(max_digits=12, decimal_places=2)

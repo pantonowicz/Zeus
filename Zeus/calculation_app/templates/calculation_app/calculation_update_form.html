@@ -7,14 +7,12 @@
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Update Calc</legend>
-                {{ form_c|crispy }}
+                <legend class="border-bottom mb-4">Update {{ calculation.client.name}}</legend>
+                {{ form|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Update Calc</button>
+                <button class="btn btn-outline-info" type="submit">Update {{ calculation.client.name }}</button>
             </div>
         </form>
     </div>
-
-
 {% endblock content %}

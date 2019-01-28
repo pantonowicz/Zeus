@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
-from calculation_app.forms import WasteCodeAddForm
+from calculation_app.forms import WasteCodeAddForm, CalculationAddForm
 from calculation_app.models import Clients, Subcontractors, Calculation, MassWaste
 
 
@@ -74,12 +74,35 @@ class SubcontractorDeleteView(DeleteView):
 # ----------------------------Calculations--------------------------------------
 class CalculationAddView(CreateView):
     model = Calculation
-    fields = ['contract_duration', 'payment_deadline', 'offer_deadline']
+    fields = ['contract_duration', 'payment_deadline', 'offer_deadline', 'client']
     template_name = 'calculation_app/calculation_add.html'
-    success_url = reverse_lazy('client-detail')
+    success_url = reverse_lazy('calculation-list')
 
 
-class CalculationDetailView(View):
+class CalculationListView(ListView):
+    model = Calculation
+    template_name = 'calculation_app/calculation_list.html'
+
+
+class CalculationDetailView(DetailView):
+    model = Calculation
+    template_name = 'calculation_app/calculation_detail.html'
+
+
+class CalculationUpdateView(UpdateView):
+    model = Calculation
+    fields = ['contract_duration', 'payment_deadline', 'offer_deadline']
+    success_url = reverse_lazy('calculation-list')
+    template_name = 'calculation_app/calculation_update_form.html'
+
+
+class CalculationDeleteView(DeleteView):
+    model = Calculation
+    template_name = 'calculation_app/calculation_confirm_delete.html'
+    success_url = reverse_lazy('calculation-list')
+
+
+class CalculationCodeAddView(View):
 
     def get(self, request, pk):
         calculation = get_object_or_404(Calculation, pk=pk)
@@ -88,10 +111,9 @@ class CalculationDetailView(View):
 
     def post(self, request, pk):
         calculation = Calculation.objects.get(pk=pk)
-        d = {}
-        d['calculation_id'] = pk
-        form = WasteCodeAddForm(request.POST, initial=d, instance=calculation)
+        form = WasteCodeAddForm(request.POST, instance=calculation)
         if form.is_valid():
+            calculation_id = form.cleaned_data.get('pk')
             w_code = form.cleaned_data.get('waste_codes')
             w_mass = form.cleaned_data.get('waste_mass')
             new_code = MassWaste()
