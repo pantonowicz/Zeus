@@ -3,7 +3,7 @@ from django.urls import path
 from calculation_app.views import ClientListView, ClientAddView, ClientDetailView, ClientUpdateView, ClientDeleteView, \
     SubcontractorListView, SubcontractorDetailView, SubcontractorAddView, SubcontractorUpdateView, \
     SubcontractorDeleteView, CalculationAddView, CalculationDetailView, CalculationListView, CalculationUpdateView, \
-    CalculationDeleteView
+    CalculationDeleteView, CalculationCodeAddView
 from . import views
 
 urlpatterns = [
@@ -27,7 +27,7 @@ urlpatterns = [
     path('calculation-update/<int:pk>', CalculationUpdateView.as_view(), name='calculation-update'),
     path('calculation-delete/<int:pk>/', CalculationDeleteView.as_view(), name='calculation-delete'),
 
-    # path('waste-add/<int:pk>/', CalculationWasteCodeAddView.as_view(), name='code-add'),
+    path('code-add/<int:calc_id>', CalculationCodeAddView.as_view(), name='code-add'),
 
     path('about/', views.about, name='calc-about'),
 ]

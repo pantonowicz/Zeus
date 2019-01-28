@@ -68,10 +68,8 @@ class Calculation(models.Model):
     payment_deadline = models.SmallIntegerField()
     offer_deadline = models.DateField()
     date_created = models.DateTimeField(auto_now_add=True)
-    # subcontractor = models.ManyToManyField(Subcontractors, through='calculation_app.Order')
     client = models.ForeignKey(Clients, on_delete=models.CASCADE)
-    # waste_codes = models.ManyToManyField(WasteCodes)
-    # waste_mass = models.DecimalField(max_digits=9, decimal_places=2)
+
 
 
 class MassWaste(models.Model):

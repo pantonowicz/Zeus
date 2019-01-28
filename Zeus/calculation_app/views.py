@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
-from calculation_app.forms import WasteCodeAddForm, CalculationAddForm
+from calculation_app.forms import WasteCodeAddForm
 from calculation_app.models import Clients, Subcontractors, Calculation, MassWaste
 
 
@@ -102,22 +102,27 @@ class CalculationDeleteView(DeleteView):
     success_url = reverse_lazy('calculation-list')
 
 
+# class CalculationCodeAddView(CreateView):
+#     model = MassWaste
+#     fields = '__all__'
+#     template_name = 'calculation_app/calculate_add_waste.html'
+#     success_url = reverse_lazy('calculation-detail')
+
+
 class CalculationCodeAddView(View):
 
-    def get(self, request, pk):
-        calculation = get_object_or_404(Calculation, pk=pk)
+    def get(self, request, calc_id):
+        calculation = get_object_or_404(Calculation, id=calc_id)
         form = WasteCodeAddForm()
-        return render(request, 'calculation_app/calculation_detail.html', locals())
+        return render(request, 'calculation_app/calculate_add_waste.html', locals())
 
-    def post(self, request, pk):
-        calculation = Calculation.objects.get(pk=pk)
-        form = WasteCodeAddForm(request.POST, instance=calculation)
+    def post(self, request, calc_id):
+        calculation = Calculation.objects.get(calc_id=calc_id)
+        form = WasteCodeAddForm(request.POST)
         if form.is_valid():
-            calculation_id = form.cleaned_data.get('pk')
             w_code = form.cleaned_data.get('waste_codes')
             w_mass = form.cleaned_data.get('waste_mass')
             new_code = MassWaste()
-            new_code.calculation_id = pk
             new_code.waste_codes_id = w_code
             new_code.waste_mass_id = w_mass
             new_code.save()
