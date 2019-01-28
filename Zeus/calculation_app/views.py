@@ -1,7 +1,7 @@
 import pprint
 
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from calculation_app.forms import MassWasteAddForm
@@ -98,14 +98,9 @@ class CalculationDetailView(DetailView):
     def post(self, request, pk):
         form = MassWasteAddForm(request.POST)
         if form.is_valid():
-            w_codes = form.cleaned_data.get('waste_codes')
-            w_mass = form.cleaned_data.get('waste_mass')
-            mass_waste = MassWaste()
-            mass_waste.waste_codes = w_codes
-            mass_waste.waste_mass = w_mass
-            mass_waste.save()
-            return redirect('calculation-detail', pk=pk)
-#         FIXME nie działa post
+            form.save()
+            return redirect(reverse('calculation-detail', args=[pk]))
+        # FIXME nie działa post... :(
 
 
 class CalculationUpdateView(UpdateView):
