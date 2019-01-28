@@ -71,7 +71,6 @@ class Calculation(models.Model):
     client = models.ForeignKey(Clients, on_delete=models.CASCADE)
 
 
-
 class MassWaste(models.Model):
     waste_mass = models.DecimalField(max_digits=9, decimal_places=2)
     waste_codes = models.ForeignKey(WasteCodes, on_delete=models.CASCADE)
