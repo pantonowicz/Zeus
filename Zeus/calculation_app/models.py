@@ -70,11 +70,18 @@ class Calculation(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     client = models.ForeignKey(Clients, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.client.name} - offer deadline by {self.offer_deadline}'
+
 
 class MassWaste(models.Model):
     waste_mass = models.DecimalField(max_digits=9, decimal_places=2)
     waste_codes = models.ForeignKey(WasteCodes, on_delete=models.CASCADE)
     calculation = models.ForeignKey(Calculation, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.calculation.client.name} - Codes: {self.waste_codes}'
+
 
 
 class Order(models.Model):

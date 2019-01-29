@@ -11,16 +11,18 @@
             <h2 class="article-title">Długość kontraktu; {{ calculation.contract_duration }}</h2>
             <h2 class="article-title">Deadline: {{ calculation.offer_deadline }}</h2>
 
-            <form method="POST">
-                {% csrf_token %}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Add Codes</legend>
-                    {{ form|crispy }}
-                </fieldset>
-                <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit">Add Code</button>
-                </div>
-            </form>
+{#            <a href="{% url 'code-add' calculation.id %}">Add Codes</a>#}
+
+{#            <form method="POST">#}
+{#                {% csrf_token %}#}
+{#                <fieldset class="form-group">#}
+{#                    <legend class="border-bottom mb-4">Add Codes</legend>#}
+{#                    {{ form|crispy }}#}
+{#                </fieldset>#}
+{#                <div class="form-group">#}
+{#                    <button class="btn btn-outline-info" type="submit">Add Code</button>#}
+{#                </div>#}
+{#            </form>#}
         </div>
 
     </article>

@@ -1,7 +1,8 @@
 import pprint
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
+from django.views import View
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from calculation_app.forms import MassWasteAddForm
@@ -85,22 +86,29 @@ class CalculationListView(ListView):
     template_name = 'calculation_app/calculation_list.html'
 
 
+# class CalculationDetailView(View):
+#
+#     def get(self, request):
+#         form = MassWasteAddForm()
+#         return render(request, 'calculation_app/calculate_add_waste.html', locals())
+
+
 class CalculationDetailView(DetailView):
     model = Calculation
     template_name = 'calculation_app/calculation_detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(CalculationDetailView, self).get_context_data(**kwargs)
-        calculation = self.object
-        context['form'] = MassWasteAddForm(initial={'calculation': calculation})
-        return context
-
-    def post(self, request, pk):
-        form = MassWasteAddForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse('calculation-detail', args=[pk]))
-        # FIXME nie działa post... :(
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(CalculationDetailView, self).get_context_data(**kwargs)
+#         calculation = self.object
+#         context['form'] = MassWasteAddForm(initial={'calculation': calculation})
+#         return context
+#
+#     def post(self, request, pk):
+#         form = MassWasteAddForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect(reverse('calculationcd .-detail', args=[pk]))
+#         # FIXME nie działa post... :(
 
 
 class CalculationUpdateView(UpdateView):
@@ -115,25 +123,26 @@ class CalculationDeleteView(DeleteView):
     template_name = 'calculation_app/calculation_confirm_delete.html'
     success_url = reverse_lazy('calculation-list')
 
-    # class CalculationCodeAddView(View):
-    #     def get(self, request, calc_id):
-    #         calculation = Calculation.objects.get(id=calc_id)
-    #         form = MassWasteAddForm(initial=[calculation])
-    #         return render(request, 'calculation_app/calculate_add_waste.html', locals())
-    #
-    #     def post(self, request, calc_id):
-    #         calculation = Calculation.objects.get(calc_id=calc_id)
-    #         form = MassWasteAddForm(request.POST)
-    #         if form.is_valid():
-    #             w_code = form.cleaned_data.get('waste_codes')
-    #             w_mass = form.cleaned_data.get('waste_mass')
-    #             new_code = MassWaste()
-    #             new_code.waste_codes_id = w_code
-    #             new_code.waste_mass_id = w_mass
-    #             new_code.save()
-    #             return redirect('calculation-detail', locals())
 
-    # ------------------------------------------------------------------------------------
+class CalculationCodeAddView(View):
+    def get(self, request):
+        form = MassWasteAddForm()
+        return render(request, 'calculation_app/calculate_add_waste.html', locals())
+
+    def post(self, request):
+        form = MassWasteAddForm(request.POST)
+        if form.is_valid():
+            calculation = form.cleaned_data.get('calculation')
+            waste_code = form.cleaned_data.get('waste_code')
+            waste_mass = form.cleaned_data.get('waste_mass')
+            new_code = MassWaste()
+            new_code.calculation = calculation
+            new_code.waste_codes = waste_code
+            new_code.waste_mass = waste_mass
+            new_code.save()
+            return redirect('calculation-detail', pk=calculation.id)
+
+# ------------------------------------------------------------------------------------
 
 
 def home(request):
