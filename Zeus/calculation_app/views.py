@@ -96,19 +96,6 @@ class CalculationListView(ListView):
 class CalculationDetailView(DetailView):
     model = Calculation
     template_name = 'calculation_app/calculation_detail.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(CalculationDetailView, self).get_context_data(**kwargs)
-#         calculation = self.object
-#         context['form'] = MassWasteAddForm(initial={'calculation': calculation})
-#         return context
-#
-#     def post(self, request, pk):
-#         form = MassWasteAddForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect(reverse('calculationcd .-detail', args=[pk]))
-#         # FIXME nie działa post... :(
 
 
 class CalculationUpdateView(UpdateView):
@@ -124,6 +111,7 @@ class CalculationDeleteView(DeleteView):
     success_url = reverse_lazy('calculation-list')
 
 
+# ----------------------------Calculation-Code-Add--------------------------------------
 class CalculationCodeAddView(View):
     def get(self, request):
         form = MassWasteAddForm()
@@ -141,6 +129,13 @@ class CalculationCodeAddView(View):
             new_code.waste_mass = waste_mass
             new_code.save()
             return redirect('calculation-detail', pk=calculation.id)
+
+
+class CalculationCodeDeleteView(DeleteView):
+    model = MassWaste
+    template_name = 'calculation_app/calculate_code_delete_confirm.html'
+    success_url = reverse_lazy('calculation-list')
+
 
 # ------------------------------------------------------------------------------------
 

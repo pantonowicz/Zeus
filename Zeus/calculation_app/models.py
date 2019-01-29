@@ -80,7 +80,7 @@ class MassWaste(models.Model):
     calculation = models.ForeignKey(Calculation, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.calculation.client.name} - Codes: {self.waste_codes}'
+        return f'Codes: {self.waste_codes}, Mass: {self.waste_mass}'
 
 
 

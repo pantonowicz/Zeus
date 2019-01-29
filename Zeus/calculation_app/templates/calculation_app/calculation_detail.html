@@ -9,20 +9,31 @@
                 <a class="mr-2" href="#">{{ calculation.client.name }}</a>
             </div>
             <h2 class="article-title">Długość kontraktu; {{ calculation.contract_duration }}</h2>
-            <h2 class="article-title">Deadline: {{ calculation.offer_deadline }}</h2>
+            <h3 class="article-title">Deadline: {{ calculation.offer_deadline }}</h3>
 
-{#            <a href="{% url 'code-add' calculation.id %}">Add Codes</a>#}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Waste Code</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Waste Mass[Mg]</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in calculation.masswaste_set.all %}
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>{{ i.waste_codes.code }}</td>
+                        <td>{{ i.waste_codes.description }}</td>
+                        <td>{{ i.waste_mass }}</td>
+                        <td><a href="{% url 'code-delete' i.pk %}">Delete Code</a> </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
-{#            <form method="POST">#}
-{#                {% csrf_token %}#}
-{#                <fieldset class="form-group">#}
-{#                    <legend class="border-bottom mb-4">Add Codes</legend>#}
-{#                    {{ form|crispy }}#}
-{#                </fieldset>#}
-{#                <div class="form-group">#}
-{#                    <button class="btn btn-outline-info" type="submit">Add Code</button>#}
-{#                </div>#}
-{#            </form>#}
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'code-add' %}">Add Code</a>
         </div>
 
     </article>
