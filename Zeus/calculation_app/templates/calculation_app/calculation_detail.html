@@ -28,6 +28,7 @@
                         <td>{{ i.waste_codes.description }}</td>
                         <td>{{ i.waste_mass }}</td>
                         <td><a href="{% url 'code-delete' i.pk %}">Delete Code</a> </td>
+                        <td><a href="{% url 'add-cost' i.pk %}">Add Cost</a> </td>
                     </tr>
                 {% endfor %}
                 </tbody>

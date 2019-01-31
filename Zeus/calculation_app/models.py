@@ -17,6 +17,23 @@ SEGMENTS_CHOICES = (
     ('14', 'WHOLESALE, RETAIL TRADE'),
 )
 
+UNIT_CHOICES = (
+    ('1', 'PLN/Mg'),
+    ('2', 'PLN/kurs'),
+    ('3', 'PLN/pojemnik'),
+)
+
+EQUIPMENT = (
+    ('1', '240l bin'),
+    ('2', '1100l bin'),
+    ('3', 'Container 7m'),
+    ('4', 'Container 20m'),
+    ('5', 'Container 34m'),
+    ('6', 'Barrel'),
+    ('7', '1000l DPPL'),
+    ('8', 'EURO-Pallets'),
+)
+
 
 class WasteCodes(models.Model):
     code = models.CharField(max_length=32)
@@ -83,7 +100,6 @@ class MassWaste(models.Model):
         return f'Codes: {self.waste_codes}, Mass: {self.waste_mass}'
 
 
-
 class Order(models.Model):
     """Dane dotyczące wyliczeń"""
     subcontractor = models.ForeignKey(Subcontractors, on_delete=models.CASCADE)
@@ -91,9 +107,10 @@ class Order(models.Model):
     local_transport_cost = models.DecimalField(max_digits=9, decimal_places=2)
     instalation_transport_cost = models.DecimalField(max_digits=9, decimal_places=2)
     management_cost = models.DecimalField(max_digits=9, decimal_places=2)
+    containter = models.CharField(choices=EQUIPMENT, max_length=32)
     logistic_details = models.CharField(max_length=256)
     quality_details = models.CharField(max_length=256)
-    unit = models.CharField(max_length=32)
+    unit = models.CharField(UNIT_CHOICES, max_length=32)
     costs_mg = models.DecimalField(max_digits=9, decimal_places=2)
     margin_mg = models.DecimalField(max_digits=9, decimal_places=2)
     turnover = models.DecimalField(max_digits=12, decimal_places=2)

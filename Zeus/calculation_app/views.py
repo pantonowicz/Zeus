@@ -5,8 +5,8 @@ from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
-from calculation_app.forms import MassWasteAddForm
-from calculation_app.models import Clients, Subcontractors, Calculation, MassWaste
+from calculation_app.forms import MassWasteAddForm, CostAddToCodeForm
+from calculation_app.models import Clients, Subcontractors, Calculation, MassWaste, Order
 
 
 # --------------------------------CLIENTS----------------------------------------
@@ -137,12 +137,39 @@ class CalculationCodeDeleteView(DeleteView):
     success_url = reverse_lazy('calculation-list')
 
 
-# ------------------------------------------------------------------------------------
+# ----------------------------Costs-Add-To-Code--------------------------------------
 
+class CostAddToCodeView(View):
 
-def home(request):
-    return render(request, 'calculation_app/home.html', {'title': 'Home'})
+    def get(self, request, waste_code_id):
+        form = CostAddToCodeForm()
+        return render(request, 'calculation_app/add_cost_to_code.html', locals())
 
+    def post(self, request, waste_code_id):
+        form = CostAddToCodeForm(request.POST)
+        if form.is_valid():
+            subcontractor = form.cleaned_data.get('subcontractor')
+            logistic_details = form.cleaned_data.get('logistic_details')
+            quality_details = form.cleaned_data.get('quality_details')
+            unit = form.cleaned_data.get('unit')
+            local_transport_cost = form.cleaned_data.get('local_transport_cost')
+            instalation_transport_cost = form.cleaned_data.get('instalation_transport_cost')
+            management_cost = form.cleaned_data.get('management_cost')
+            new_cost = Order()
+            new_cost.subcontractor = subcontractor
+            new_cost.logistic_details = logistic_details
+            new_cost.quality_details = quality_details
+            new_cost.unit = unit
+            new_cost.local_transport_cost = local_transport_cost
+            new_cost.instalation_transport_cost = instalation_transport_cost
+            new_cost.management_cost = management_cost
+            form.save()
+            return redirect('calculation-list', locals())
 
-def about(request):
-    return render(request, 'calculation_app/about.html', {'title': 'About'})
+    # ------------------------------------------------------------------------------------
+
+    def home(request):
+        return render(request, 'calculation_app/home.html', {'title': 'Home'})
+
+    def about(request):
+        return render(request, 'calculation_app/about.html', {'title': 'About'})

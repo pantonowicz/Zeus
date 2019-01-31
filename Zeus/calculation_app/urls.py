@@ -3,11 +3,11 @@ from django.urls import path
 from calculation_app.views import ClientListView, ClientAddView, ClientDetailView, ClientUpdateView, ClientDeleteView, \
     SubcontractorListView, SubcontractorDetailView, SubcontractorAddView, SubcontractorUpdateView, \
     SubcontractorDeleteView, CalculationAddView, CalculationDetailView, CalculationListView, CalculationUpdateView, \
-    CalculationDeleteView, CalculationCodeAddView, CalculationCodeDeleteView
+    CalculationDeleteView, CalculationCodeAddView, CalculationCodeDeleteView, CostAddToCodeView
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    # path('', views.home, name='home'),
 
     path('clients/', ClientListView.as_view(), name='client-list'),
     path('client-detail/<int:pk>/', ClientDetailView.as_view(), name='client-detail'),
@@ -30,5 +30,7 @@ urlpatterns = [
     path('code-add/', CalculationCodeAddView.as_view(), name='code-add'),
     path('code-delete/<int:pk>', CalculationCodeDeleteView.as_view(), name='code-delete'),
 
-    path('about/', views.about, name='calc-about'),
+    path('add-cost/<int:waste_code_id>', CostAddToCodeView.as_view(), name='add-cost'),
+
+    # path('about/', views.about, name='calc-about'),
 ]
