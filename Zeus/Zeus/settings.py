@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'calculation_app',
     'users',
     'crispy_forms',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +80,7 @@ WSGI_APPLICATION = 'Zeus.wsgi.application'
 DATABASES = {
     'default': {
         'HOST': '127.0.0.1',
-        'NAME': 'zeus2_db',
+        'NAME': 'zeus_db',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'USER': 'postgres',
         'PASSWORD': 'coderslab',
