@@ -1,0 +1,42 @@
+{% extends "calculation_app/main.html" %}
+{% load crispy_forms_tags %}
+{% load users.extras %}
+{% block content %}
+<div class="content-section">
+    <div class="media">
+        <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
+        <div class="media-body">
+            <h2 class="account-heading">{{ user.username }}</h2>
+            <h4>First name and last name: {{ user.first_name }} {{ user.last_name }}</h4>
+            <h4>Role: {{ user.profile.get_role_display }}</h4>
+
+            {#                TODO Zrobić tabelkę dla każdej roli. Handlowiec- klienci, wyceny - wyceny w trakcie, kalkulacje - lista wszystkich tematów i podział na w trakcie#}
+
+            {#                {% if user.profile.role ==  0 %}#}
+            {#                    <h4>Clients: {{ user.student.year_of_birth }}</h4>#}
+            {#                    <h4>Klasa: {{ user|name_of_class }}</h4>#}
+            {#                {% elif user.profile.role == 1 %}#}
+            {#                    <h4>Uczniowie:#}
+            {#                    {% for student in user|parent_students %}#}
+            {#                         {{ student }}#}
+            {#                    {% endfor %}#}
+{#            </h4>#}
+{#            {% endif %}#}
+        </div>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <label class="border-bottom mb-4">Edit profile</label>
+            {{ u_form|crispy }}
+            {{ p_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit" name="button" value="update">Confirm</button>
+            <button class="btn btn-outline-info float-right" type="submit" name="button" value="change_password">Change
+                password
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
