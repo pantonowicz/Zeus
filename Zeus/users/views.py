@@ -71,7 +71,7 @@ class RegisterValuationTeamView(View):
             ValuationTeamMember.objects.create(user_id=user.id)
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account for {username} has been created')
-            return redirect('register')
+            return redirect('login')
         return render(request, 'users/register.html', {'form': form})
 
 

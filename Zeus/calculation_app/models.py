@@ -28,7 +28,7 @@ WASTE_PERMISSION_CHOICES = [
 UNIT_CHOICES = (
     (1, 'PLN/Mg'),
     (2, 'PLN/course'),
-    (3, 'PLN/caontainer'),
+    (3, 'PLN/container'),
 )
 
 EQUIPMENT = (
@@ -60,19 +60,35 @@ class WasteCodes(models.Model):
 #     def __str__(self):
 #         return f'Client: {self.company} - {self.bdo_number}'
 
-class SalesRepresentative(models.Model):
+class SalesTeamMember(models.Model):
     """Model handlowca i przypisanych tematów"""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    clients = models.ForeignKey('Clients', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
 
 
-class Clients(models.Model):
+class ValuationTeamMember(models.Model):
+    """Model działu wycen"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name}'
+
+
+class CalculationTeamMember(models.Model):
+    """Model działu kalkulacji"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name}'
+
+
+class Client(models.Model):
     """Dane dotyczące klienta"""
+    sales_rep = models.ForeignKey(SalesTeamMember, on_delete=models.CASCADE)
     name = models.CharField(max_length=128, null=False)
-    segment = models.CharField(choices=SEGMENTS_CHOICES, max_length=64)
+    segment = models.IntegerField(choices=SEGMENTS_CHOICES)
     city = models.CharField(max_length=64)
     postal = models.CharField(max_length=32)
     street = models.CharField(max_length=128)
@@ -99,7 +115,7 @@ class Subcontractor(models.Model):
         return f'Subcontractor: {self.name}, From: {self.street}, {self.postal} {self.city}'
 
 
-class WasteCodeSubcotractor(models.Model):
+class WasteCodeSubcontractor(models.Model):
     subcontractor = models.ForeignKey(Subcontractor, on_delete=models.CASCADE)
     waste_code = models.ForeignKey(WasteCodes, on_delete=models.CASCADE)
     permission = models.IntegerField(choices=WASTE_PERMISSION_CHOICES)
@@ -110,7 +126,8 @@ class WasteCodeSubcotractor(models.Model):
 
 class ContractDetails(models.Model):
     """Dane dotyczące kontraktu"""
-    sales_rep = models.ForeignKey(SalesRepresentative, on_delete=models.CASCADE)
+    sales_rep = models.ForeignKey(SalesTeamMember, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     contract_duration = models.CharField(max_length=16)
     payment_deadline = models.SmallIntegerField()
     offer_deadline = models.DateField()
@@ -120,10 +137,8 @@ class ContractDetails(models.Model):
     contact_phone = models.CharField(max_length=16)
     contact_email = models.EmailField()
 
-    # client = models.ForeignKey(Clients, on_delete=models.CASCADE)
-
     def __str__(self):
-        return f'{self.sales_rep.clients.name} - offer deadline by {self.offer_deadline}'
+        return f'{self.sales_rep.client_set} - offer deadline by {self.offer_deadline}'
 
 
 class MassWaste(models.Model):
@@ -137,9 +152,10 @@ class MassWaste(models.Model):
 
 
 class Evaluation(models.Model):
-    """Dane dotyczące wyliczeń"""
-    subcontractor = models.ForeignKey(ContractDetails, on_delete=models.CASCADE)
-    calculation = models.OneToOneField(MassWaste, on_delete=models.CASCADE)
+    """Dane dotyczące kosztu"""
+    evaluation_employee = models.ManyToManyField(ValuationTeamMember)
+    subcontractor = models.ManyToManyField(Subcontractor)
+    mass_waste = models.OneToOneField(MassWaste, on_delete=models.CASCADE)
     transport_cost = models.DecimalField(max_digits=9, decimal_places=2)
     management_cost = models.DecimalField(max_digits=9, decimal_places=2)
     containter = models.CharField(choices=EQUIPMENT, max_length=32)
@@ -147,13 +163,25 @@ class Evaluation(models.Model):
     quality_details = models.CharField(max_length=256)
     unit = models.CharField(UNIT_CHOICES, max_length=32)
     costs_mg = models.DecimalField(max_digits=9, decimal_places=2)
+    evaluated = models.BooleanField(default=False)
 
 
 class Calculation(models.Model):
-    costs = models.ForeignKey(Evaluation, on_delete=models.CASCADE)
+    calculation_employee = models.ManyToManyField(CalculationTeamMember)
+    calc_cost = models.ForeignKey(Evaluation, on_delete=models.CASCADE)
     costs_per_mg = models.DecimalField(max_digits=9, decimal_places=2)
     margin_per_mg = models.DecimalField(max_digits=9, decimal_places=2)
     price_per_mg = models.DecimalField(max_digits=9, decimal_places=2)
     margin = models.DecimalField(max_digits=9, decimal_places=2)
     turnover = models.DecimalField(max_digits=12, decimal_places=2)
     total_costs = models.DecimalField(max_digits=12, decimal_places=2)
+    calculated = models.BooleanField(default=False)
+
+
+class Announcements(models.Model):
+    title = models.CharField(max_length=64)
+    text = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)

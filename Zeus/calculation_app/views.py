@@ -1,175 +1,124 @@
-import pprint
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, UpdateView, DetailView
+from django.contrib import messages
 
-from calculation_app.forms import MassWasteAddForm, CostAddToCodeForm
-from calculation_app.models import Clients, Subcontractors, Calculation, MassWaste, Order
-
-
-# --------------------------------CLIENTS----------------------------------------
-class ClientListView(ListView):
-    model = Clients
-    template_name = "calculation_app/client_list.html"
-    context_object_name = 'clients'
+from calculation_app.forms import AddClientForm, AddAnnouncementForm, EditAnnouncementForm
+from calculation_app.models import Announcements, SalesTeamMember, ValuationTeamMember, Calculation, Client
 
 
-class ClientAddView(CreateView):
-    model = Clients
-    fields = ['name', 'segment', 'city', 'postal', 'street', 'nip']
-    template_name = 'calculation_app/client_add.html'
-    success_url = reverse_lazy('client-list')
+def test_func(user, role):
+    if user.profile.role == role:
+        return True
+    else:
+        return False
 
 
-class ClientDetailView(DetailView):
-    model = Clients
-    template_name = 'calculation_app/client_detail.html'
+class MainView(ListView):
+    model = Announcements
+    paginate_by = 10
+    ordering_by = ['-date']
+    template_name = 'calculation_app/main.html'
+
+
+class SalesPanelView(LoginRequiredMixin, View):
+    def get(self, request):
+        sales_rep = SalesTeamMember.objects.get(user_id=self.request.user.id)
+        clients = sales_rep.client_set.all()
+        return render(request, 'calculation_app/client_list.html', locals())
+
+    def test_func(self):
+        return test_func(self.request.user, 0)
+
+
+class ValuationPanelView(LoginRequiredMixin, View):
+    def get(self, request):
+        valuation_employee = ValuationTeamMember.objects.get(user_id=self.request.user.id)
+        evaluation = valuation_employee.evaluation.all()
+        return render(request, 'calculation_app/valuation_list.html', locals())
+
+    def test_func(self):
+        return test_func(self.request.user, 1)
+
+
+class CalculationPanelView(LoginRequiredMixin, View):
+    def get(self, request):
+        calculations = Calculation.objects.all()
+        return render(request, 'calculation_app/calculation_list.html', locals())
+
+    def test_func(self):
+        return test_func(self.request.user, 2)
+
+
+class ClientDetailView(LoginRequiredMixin, View):
+    def get(self, request, client_id):
+        client = get_object_or_404(Client, id=client_id)
+        return render(request, 'calculation_app/client_detail.html', locals())
+
+
+class ClientAddView(LoginRequiredMixin, View):
+    def get(self, request):
+        sales_rep = SalesTeamMember.objects.get(user_id=self.request.user.id)
+        form = AddClientForm(initial={'sales_rep': sales_rep})
+        return render(request, 'calculation_app/client_add.html', {'form': form})
+
+    def post(self, request):
+        form = AddClientForm(request.POST)
+        if form.is_valid():
+            new_client = form.save(commit=False)
+            sales_r = SalesTeamMember.objects.get(user=request.user)
+            new_client.sales_rep = sales_r
+            new_client.save()
+            return redirect('client-list')
+        return render(request, 'calculation_app/client_add.html', locals())
 
 
 class ClientUpdateView(UpdateView):
-    model = Clients
-    fields = '__all__'
-    success_url = reverse_lazy('client-list')
+    model = Client
+    fields = ['name', 'segment', 'city', 'postal', 'street', 'nip']
     template_name = 'calculation_app/client_update_form.html'
-
-
-class ClientDeleteView(DeleteView):
-    model = Clients
-    template_name = 'calculation_app/client_confirm_delete.html'
     success_url = reverse_lazy('client-list')
 
 
-# ----------------------------SUBCONTRACTORS--------------------------------------
-class SubcontractorListView(ListView):
-    model = Subcontractors
-    template_name = 'calculation_app/subcontractor_list.html'
-    context_object_name = 'subcontractors'
+class ClientDeleteView(DetailView):
+    model = Client
+    template_name = 'calculation_app/client_confirm_delete.html'
+    succes_url = reverse_lazy('main')
 
 
-class SubcontractorAddView(CreateView):
-    model = Subcontractors
-    fields = '__all__'
-    template_name = 'calculation_app/subcontractor_add.html'
-    success_url = reverse_lazy('subcontractor-list')
+class AnnouncementsAddView(LoginRequiredMixin, View):
+    class_form = AddAnnouncementForm
 
-
-class SubcontractorDetailView(DetailView):
-    model = Subcontractors
-    template_name = 'calculation_app/subcontractor_detail.html'
-
-
-class SubcontractorUpdateView(UpdateView):
-    model = Subcontractors
-    fields = '__all__'
-    success_url = reverse_lazy('subcontractor-list')
-    template_name = 'calculation_app/subcontractor_update_form.html'
-
-
-class SubcontractorDeleteView(DeleteView):
-    model = Subcontractors
-    template_name = 'calculation_app/subcontractor_confirm_delete.html'
-    success_url = reverse_lazy('subcontractor-list')
-
-
-# ----------------------------Calculations--------------------------------------
-class CalculationAddView(CreateView):
-    model = Calculation
-    fields = ['contract_duration', 'payment_deadline', 'offer_deadline', 'client']
-    template_name = 'calculation_app/calculation_add.html'
-    success_url = reverse_lazy('calculation-list')
-
-
-class CalculationListView(ListView):
-    model = Calculation
-    template_name = 'calculation_app/calculation_list.html'
-
-
-# class CalculationDetailView(View):
-#
-#     def get(self, request):
-#         form = MassWasteAddForm()
-#         return render(request, 'calculation_app/calculate_add_waste.html', locals())
-
-
-class CalculationDetailView(DetailView):
-    model = Calculation
-    template_name = 'calculation_app/calculation_detail.html'
-
-
-class CalculationUpdateView(UpdateView):
-    model = Calculation
-    fields = ['contract_duration', 'payment_deadline', 'offer_deadline']
-    success_url = reverse_lazy('calculation-list')
-    template_name = 'calculation_app/calculation_update_form.html'
-
-
-class CalculationDeleteView(DeleteView):
-    model = Calculation
-    template_name = 'calculation_app/calculation_confirm_delete.html'
-    success_url = reverse_lazy('calculation-list')
-
-
-# ----------------------------Calculation-Code-Add--------------------------------------
-class CalculationCodeAddView(View):
     def get(self, request):
-        form = MassWasteAddForm()
-        return render(request, 'calculation_app/calculate_add_waste.html', locals())
+        form = self.class_form()
+        return render(request, 'calculation_app/announcement_add.html', {'form': form})
 
     def post(self, request):
-        form = MassWasteAddForm(request.POST)
+        form = self.class_form(request.POST)
         if form.is_valid():
-            calculation = form.cleaned_data.get('calculation')
-            waste_code = form.cleaned_data.get('waste_code')
-            waste_mass = form.cleaned_data.get('waste_mass')
-            new_code = MassWaste()
-            new_code.calculation = calculation
-            new_code.waste_codes = waste_code
-            new_code.waste_mass = waste_mass
-            new_code.save()
-            return redirect('calculation-detail', pk=calculation.id)
+            new_announcement = form.save(commit=False)
+            new_announcement.author = request.user
+            new_announcement.save()
+            messages.success(request, 'New announcement added')
+            return redirect('main')
+        return render(request, 'calculation_app/announcement_add.html', {'form': form})
 
 
-class CalculationCodeDeleteView(DeleteView):
-    model = MassWaste
-    template_name = 'calculation_app/calculate_code_delete_confirm.html'
-    success_url = reverse_lazy('calculation-list')
+class AnnouncementsEditView(LoginRequiredMixin, View):
+    class_form = EditAnnouncementForm
 
+    def get(self, request, announcement_id):
+        announcement = get_object_or_404(Announcements, id=announcement_id)
+        form = self.class_form(instance=announcement)
+        return render(request, 'calculation_app/announcement_add.html', locals())
 
-# ----------------------------Costs-Add-To-Code--------------------------------------
-
-class CostAddToCodeView(View):
-
-    def get(self, request, waste_code_id):
-        form = CostAddToCodeForm()
-        return render(request, 'calculation_app/add_cost_to_code.html', locals())
-
-    def post(self, request, waste_code_id):
-        form = CostAddToCodeForm(request.POST)
+    def post(self, request, announcement_id):
+        announcement = get_object_or_404(Announcements, id=announcement_id)
+        form = self.class_form(request.POST, instance=announcement)
         if form.is_valid():
-            subcontractor = form.cleaned_data.get('subcontractor')
-            logistic_details = form.cleaned_data.get('logistic_details')
-            quality_details = form.cleaned_data.get('quality_details')
-            unit = form.cleaned_data.get('unit')
-            local_transport_cost = form.cleaned_data.get('local_transport_cost')
-            instalation_transport_cost = form.cleaned_data.get('instalation_transport_cost')
-            management_cost = form.cleaned_data.get('management_cost')
-            new_cost = Order()
-            new_cost.subcontractor = subcontractor
-            new_cost.logistic_details = logistic_details
-            new_cost.quality_details = quality_details
-            new_cost.unit = unit
-            new_cost.local_transport_cost = local_transport_cost
-            new_cost.instalation_transport_cost = instalation_transport_cost
-            new_cost.management_cost = management_cost
             form.save()
-            return redirect('calculation-list', locals())
-
-    # ------------------------------------------------------------------------------------
-
-    def home(request):
-        return render(request, 'calculation_app/home.html', {'title': 'Home'})
-
-    def about(request):
-        return render(request, 'calculation_app/about.html', {'title': 'About'})
+            messages.success(request, 'Announcement has been modified!')
+            return redirect('main')
+        return render(request, 'calculation_app/announcement_add.html', {'form': form})
