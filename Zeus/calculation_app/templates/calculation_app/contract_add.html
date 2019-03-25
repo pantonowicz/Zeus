@@ -1,0 +1,28 @@
+{% extends "calculation_app/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+        <div class="content-section">
+            <div class="media">
+                <div class="media-body">
+                    <h2 class="account-heading">Client: {{ client_contract.name }}</h2>
+                    <h4>Segment: {{ client_contract.segment }}</h4>
+                    <h4>
+                        Sales representative: <a href="
+{#{% url 'sales-client-list' client_contract.sales_rep.id %}#}
+#">
+                        {{ client_contract.sales_rep }}</a>
+                    </h4>
+                </div>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    {{ form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit" name="button" value="form_btn">Add New Offer</button>
+                </div>
+            </form>
+
+{% endblock content %}

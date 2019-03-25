@@ -1,7 +1,7 @@
 from django.urls import path
 
 from calculation_app.views import MainView, SalesPanelView, ValuationPanelView, CalculationPanelView, ClientAddView, \
-    ClientDetailView, ClientUpdateView, ClientDeleteView, AnnouncementsAddView, AnnouncementsEditView
+    ClientDetailView, ClientUpdateView, ClientDeleteView, AnnouncementsAddView, AnnouncementsEditView, AddContractView
 
 urlpatterns = [
     path('', MainView.as_view(), name='main'),
@@ -14,5 +14,6 @@ urlpatterns = [
     path('calculation_panel/', CalculationPanelView.as_view(), name='calculation-panel-view'),
     path('announcement_add/', AnnouncementsAddView.as_view(), name='announcement-add'),
     path('announcement_edit/<int:announcement_id>', AnnouncementsEditView.as_view(), name='announcement-edit'),
+    path('add_contract/<int:client_id>/', AddContractView.as_view(), name='add-contract'),
 
 ]

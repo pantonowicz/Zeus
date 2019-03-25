@@ -5,7 +5,7 @@ from django.views import View
 from django.views.generic import ListView, UpdateView, DetailView
 from django.contrib import messages
 
-from calculation_app.forms import AddClientForm, AddAnnouncementForm, EditAnnouncementForm
+from calculation_app.forms import AddClientForm, AddAnnouncementForm, EditAnnouncementForm, AddContractForm
 from calculation_app.models import Announcements, SalesTeamMember, ValuationTeamMember, Calculation, Client
 
 
@@ -86,6 +86,28 @@ class ClientDeleteView(DetailView):
     model = Client
     template_name = 'calculation_app/client_confirm_delete.html'
     succes_url = reverse_lazy('main')
+
+
+class AddContractView(LoginRequiredMixin, View):
+
+    def get(self, request, client_id):
+        client_contract = get_object_or_404(Client, id=client_id)
+        sales_rep = SalesTeamMember.objects.get(user_id=self.request.user.id)
+        form = AddContractForm()
+        return render(request, 'calculation_app/contract_add.html', locals())
+
+    def post(self, request, client_id):
+        form = AddContractForm(request.POST)
+        client_contract = get_object_or_404(Client, id=client_id)
+        sales_rep = SalesTeamMember.objects.get(user_id=self.request.user.id)
+        if form.is_valid():
+            new_contract = form.save(commit=False)
+            new_contract.sales_rep = sales_rep
+            new_contract.client = client_contract
+            new_contract.save()
+            messages.success(request, 'New contract added')
+            return redirect('add-contract', client_id=client_id)
+        return render(request, 'calculation_app/contract_add.html', locals())
 
 
 class AnnouncementsAddView(LoginRequiredMixin, View):

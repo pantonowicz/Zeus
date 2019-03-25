@@ -6,23 +6,27 @@
             <div class="article-metadata">
                 <a class="mr-2" href="#">{{ clients.name }}</a>
                 <div>
-{#                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'calculation-add' %}">Add Calculation</a>#}
+                    <a class="btn btn-secondary btn-sm mt-1 mb-1"
+                       href="{% url 'add-contract' client.id %}">Add Contract</a>
                     <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'client-update' client.id %}">Update</a>
                     <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'client-delete' client.id %}">Delete</a>
                 </div>
             </div>
             <h2 class="article-title">{{ client.name }}</h2>
             <p class="article-content">{{ client.get_segment_display }}</p>
-            <p>Adres siedziby: {{ client.street }}</p>
-            <p>Kod pocztowy i miasto: {{ client.postal }} {{ client.city }}</p>
+            <p>Street: {{ client.street }}</p>
+            <p>Postal code and City: {{ client.postal }} {{ client.city }}</p>
             <p>NIP: {{ client.nip }}</p>
-            <p>Kalkulacje:</p>
+            <p>Contracts:</p>
             <ul>
-{#                {% for calc in client.calculation_set.all %}#}
-{#                    <li><a href="{% url 'calculation-detail' calc.id %}"> {{ calc.offer_deadline }}</a>#}
-{#                        <a href="{% url 'calculation-update' calc.id %}">[Update Calculation]</a>#}
-{#                        <a href="{% url 'calculation-delete' calc.id %}">[Delete Calculation]</a></li>#}
-{#                {% endfor %}#}
+                {% for contract in client.contractdetails_set.all %}
+                    <li>
+                        <a>{{ contract.info }}</a>
+    {#                    <a href="{% url 'calculation-detail' calc.id %}"> {{ calc.offer_deadline }}</a>#}
+    {#                    <a href="{% url 'calculation-update' calc.id %}">[Update Calculation]</a>#}
+{#                        <a href="{% url 'calculation-delete' calc.id %}">[Delete Calculation]</a>#}
+                    </li>
+                {% endfor %}
             </ul>
 
 

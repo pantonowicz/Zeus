@@ -11,6 +11,7 @@
                 <article class="media content-section">
                   <div class="media-body">
                     <div class="article-metadata">
+                        <p class="article-title">{{ announcement.author.first_name }} {{ announcement.author.last_name }}</p>
                         <p class="mr-2">
                         {% if announcement.author == request.user %}
                             <a href="{% url 'announcement-edit' announcement.id %}" class="float-right">Edit</a>
